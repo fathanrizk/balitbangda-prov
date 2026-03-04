@@ -1,0 +1,31 @@
+{
+    "name": "api",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "db:push": "drizzle-kit push",
+        "db:studio": "drizzle-kit studio",
+        "db:generate": "drizzle-kit generate",
+        "db:migrate": "drizzle-kit migrate",
+        "db:seed": "tsx src/db/seed.ts"
+    },
+    "dependencies": {
+        "express": "^5.0.1",
+        "drizzle-orm": "^0.44.0",
+        "postgres": "^3.4.5",
+        "better-auth": "^1.2.7",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.7"
+    },
+    "devDependencies": {
+        "drizzle-kit": "^0.31.4",
+        "typescript": "^5.7.3",
+        "tsx": "^4.19.2",
+        "@types/express": "^5.0.0",
+        "@types/cors": "^2.8.17",
+        "@types/node": "^22.10.0"
+    }
+}

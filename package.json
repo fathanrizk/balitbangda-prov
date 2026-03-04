@@ -1,0 +1,8 @@
+{
+  "name": "admin-dashboard-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
