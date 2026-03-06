@@ -108,8 +108,10 @@ const PublicCatalog = () => {
                             <span className="text-lg font-bold tracking-tight text-primary dark:text-slate-100">Balitbangda Provinsi Lampung</span>
                         </Link>
                         <div className="hidden md:flex items-center gap-8">
-                            <Link to="/katalog" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Beranda</Link>
-                            {/* <Link to="/katalog" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Tentang</Link> */}
+                            {/*<Link to="/katalog" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Beranda</Link>*/}
+                            <a href="/katalog" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Beranda</a>
+                            {/* <Link to="https://balitbangda.lampungprov.go.id/" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Balitbangda</Link> */}
+                            <a href="https://balitbangda.lampungprov.go.id/" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300"> Balitbangda</a>
                             <Link to="/admin/login" className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-secondary transition-all shadow-lg shadow-primary/20">
                                 Login
                             </Link>
@@ -134,8 +136,9 @@ const PublicCatalog = () => {
             {/* Hero Section */}
             <section className="pt-24 pb-16 px-4">
                 <div className="max-w-7xl mx-auto">
-                    <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary to-secondary p-8 md:p-16 text-center shadow-2xl">
-                        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
+                    <div className="relative rounded-2xl overflow-hidden p-8 md:p-16 text-center shadow-2xl bg-cover bg-center"
+                        style={{ backgroundImage: "url('bg_header.jpg')" }}>
+                        <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
                         <div className="relative z-10 max-w-1xl mx-auto">
                             <h1 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
                                 Database Policy Paper

@@ -1,0 +1,151 @@
+# Alur Kerja: Update Code Lokal → Deploy ke Vercel
+
+---
+
+## Gambaran Alur
+
+```mermaid
+flowchart LR
+    A["✏️ Edit Code\n(Lokal)"] --> B["🧪 Test Lokal\n(npm run dev)"]
+    B --> C["📦 Git Commit\n& Push"]
+    C --> D["🚀 Vercel\nAuto-Deploy"]
+    D --> E["🌐 Live!\n(vercel.app)"]
+```
+
+> **Prinsip utama:** Setiap kali Anda `git push` ke GitHub, Vercel **otomatis** build & deploy ulang. Tidak perlu deploy manual.
+
+---
+
+## Step 1: Jalankan Server Lokal
+
+Buka **2 terminal** terpisah:
+
+```bash
+# Terminal 1 — Backend API
+cd "c:\Users\HYPE AMD\BELAJAR\Coding Anti gravity\apps\api"
+npm run dev
+# ✅ Berjalan di http://localhost:3001
+
+# Terminal 2 — Frontend
+cd "c:\Users\HYPE AMD\BELAJAR\Coding Anti gravity\apps\admin-dashboard"
+npm run dev
+# ✅ Berjalan di http://localhost:5174
+```
+
+Buka `http://localhost:5174` di browser untuk preview.
+
+---
+
+## Step 2: Edit Code
+
+Edit file sesuka hati di VS Code. Perubahan langsung terlihat di browser (hot reload).
+
+### Lokasi file penting:
+
+| Apa | File |
+|-----|------|
+| **Halaman publik** | [apps/admin-dashboard/src/pages/PublicCatalog.jsx](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/admin-dashboard/src/pages/PublicCatalog.jsx) |
+| **Detail dokumen** | [apps/admin-dashboard/src/pages/DetailKatalog.jsx](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/admin-dashboard/src/pages/DetailKatalog.jsx) |
+| **Dashboard admin** | [apps/admin-dashboard/src/App.jsx](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/admin-dashboard/src/App.jsx) |
+| **Form dokumen** | [apps/admin-dashboard/src/pages/TambahDokumen.jsx](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/admin-dashboard/src/pages/TambahDokumen.jsx) |
+| **Unit Kerja** | [apps/admin-dashboard/src/pages/UnitKerja.jsx](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/admin-dashboard/src/pages/UnitKerja.jsx) |
+| **Login** | [apps/admin-dashboard/src/pages/Login.jsx](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/admin-dashboard/src/pages/Login.jsx) |
+| **Styling** | [apps/admin-dashboard/src/App.css](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/admin-dashboard/src/App.css) |
+| **API routes** | `apps/api/src/routes/*.ts` |
+| **Database schema** | [apps/api/src/db/schema.ts](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/api/src/db/schema.ts) |
+
+---
+
+## Step 3: Test di Lokal
+
+Pastikan perubahan berfungsi sebelum push:
+
+```bash
+# Test build frontend (opsional, rekomendasi)
+cd apps/admin-dashboard
+npm run build
+# ✅ Jika ada error, perbaiki sebelum push
+```
+
+---
+
+## Step 4: Commit & Push ke GitHub
+
+```bash
+# Di root project
+cd "c:\Users\HYPE AMD\BELAJAR\Coding Anti gravity"
+
+# Lihat file yang berubah
+git status
+
+# Tambahkan semua perubahan
+git add -A
+
+# Commit dengan pesan deskriptif
+git commit -m "fix: perbaiki tampilan card katalog"
+
+# Push ke GitHub → Vercel otomatis deploy
+git push
+```
+
+> [!TIP]
+> Gunakan pesan commit yang jelas, contoh:
+> - `feat: tambah fitur filter tahun`
+> - `fix: perbaiki CORS error`
+> - `style: update warna header`
+
+---
+
+## Step 5: Vercel Auto-Deploy
+
+Setelah `git push`:
+1. Vercel mendeteksi perubahan di GitHub (otomatis)
+2. Build dimulai (~1-2 menit)
+3. Jika **berhasil** → site live diupdate
+4. Jika **gagal** → site lama tetap aktif, cek error di Vercel dashboard
+
+### Cara cek status deploy:
+1. Buka [vercel.com](https://vercel.com) → pilih project
+2. Tab **Deployments** → lihat status terbaru
+3. ✅ = berhasil, ❌ = gagal (klik untuk lihat log error)
+
+---
+
+## Alur Khusus: Jika Mengubah Database Schema
+
+Jika Anda edit [apps/api/src/db/schema.ts](file:///c:/Users/HYPE%20AMD/BELAJAR/Coding%20Anti%20gravity/apps/api/src/db/schema.ts) (tambah/ubah tabel/kolom):
+
+```bash
+cd apps/api
+
+# Sync schema ke database Neon
+npx drizzle-kit push
+
+# Lalu commit & push seperti biasa
+```
+
+---
+
+## Ringkasan Perintah Git
+
+| Perintah | Fungsi |
+|----------|--------|
+| `git status` | Lihat file yang berubah |
+| `git add -A` | Stage semua perubahan |
+| `git commit -m "pesan"` | Simpan snapshot perubahan |
+| `git push` | Kirim ke GitHub → trigger Vercel deploy |
+| `git log -n 5` | Lihat 5 commit terakhir |
+
+---
+
+## URL Penting
+
+| Apa | URL |
+|-----|-----|
+| **Frontend (live)** | https://balitbangda-web.vercel.app |
+| **Backend API (live)** | https://balitbangda-api.vercel.app |
+| **GitHub Repo** | https://github.com/fathanrizk/balitbangda-prov |
+| **Vercel Dashboard** | https://vercel.com |
+| **Neon Database** | https://console.neon.tech |
+| **Frontend (lokal)** | http://localhost:5174 |
+| **Backend (lokal)** | http://localhost:3001 |

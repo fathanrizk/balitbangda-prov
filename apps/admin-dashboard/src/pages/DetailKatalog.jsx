@@ -79,14 +79,17 @@ const DetailKatalog = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <Link to="/katalog" className="flex items-center gap-3">
-                            <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                                <span className="material-symbols-outlined text-[18px]">account_balance</span>
+                            <div className="size-16 rounded-lg flex items-center justify-center text-white">
+                                <img src="/logo_pemprov.png" alt="Logo" className="w-12 h-14" />
+                                {/* <span className="material-symbols-outlined text-[18px]">account_balance</span> */}
                             </div>
-                            <span className="text-lg font-bold tracking-tight text-primary dark:text-slate-100">Balitbangda Lampung</span>
+                            <span className="text-lg font-bold tracking-tight text-primary dark:text-slate-100">Balitbangda Provinsi Lampung</span>
                         </Link>
                         <div className="hidden md:flex items-center gap-8">
-                            <Link to="/katalog" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Beranda</Link>
-                            <Link to="/katalog" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Tentang</Link>
+                            {/*<Link to="/katalog" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Beranda</Link>*/}
+                            <a href="/katalog" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Beranda</a>
+                            {/* <Link to="https://balitbangda.lampungprov.go.id/" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300">Balitbangda</Link> */}
+                            <a href="https://balitbangda.lampungprov.go.id/" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold hover:text-primary transition-colors text-slate-700 dark:text-slate-300"> Balitbangda</a>
                             <Link to="/admin/login" className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-secondary transition-all shadow-lg shadow-primary/20">
                                 Login
                             </Link>
