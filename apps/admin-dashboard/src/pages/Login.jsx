@@ -42,7 +42,7 @@ const Login = () => {
 
             <div className="layout-container flex w-full max-w-md flex-col z-10">
                 {/* Login Card */}
-                <div className="glass-card rounded-2xl shadow-2xl p-8 md:p-10 flex flex-col items-center">
+                <div className="bg-white glass-card rounded-2xl shadow-2xl p-8 md:p-10 flex flex-col items-center">
 
                     {/* Logo & Header */}
                     <div className="flex flex-col items-center gap-4 mb-8">
