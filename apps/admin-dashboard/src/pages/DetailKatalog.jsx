@@ -24,20 +24,53 @@ const DetailKatalog = () => {
             .finally(() => setLoading(false));
     }, [id]);
 
+
     const handleDownload = async () => {
         if (!doc) return;
         setDownloading(true);
+
         try {
-            const res = await api.post(`/documents/${id}/download`);
-            if (res.pdfUrl) {
-                window.open(res.pdfUrl, '_blank');
+            // Tetap panggil API backend untuk mencatat statistik download
+            await api.post(`/documents/${id}/download`);
+
+            // Ekstrak ID File dari URL Google Drive
+            let fileId = null;
+            const fileMatch = doc.pdfUrl.match(/\/d\/(.+?)\//);
+            if (fileMatch) fileId = fileMatch[1];
+
+            if (!fileId) {
+                const idMatch = doc.pdfUrl.match(/(?:id=)(.+?)(?:&|$)/);
+                if (idMatch) fileId = idMatch[1];
+            }
+
+            if (fileId) {
+                // Trik: Gunakan URL docs.google.com yang seringkali lebih reliable untuk direct download
+                // dibanding drive.google.com yang sering di-redirect ke preview
+                const directDownloadUrl = `https://docs.google.com/uc?export=download&id=${fileId}`;
+
+                // Gunakan window.open di tab baru. 
+                // Jika file memang public dan tidak kena limit, tab baru akan tertutup otomatis setelah download.
+                // Jika file butuh login (karena setting privasi akun/workspace), user bisa login aman di tab baru
+                // tanpa merusak (mereplace) halaman web kita saat ini.
+                window.open(directDownloadUrl, '_blank');
             } else {
-                alert('Link PDF tidak tersedia.');
+                // Jika pdfUrl bukan link Drive (misal link langsung ke file .pdf)
+                const link = document.createElement('a');
+                link.href = doc.pdfUrl;
+                link.download = doc.title || 'document.pdf';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
         } catch (err) {
-            alert(err.message || 'Gagal mengunduh dokumen.');
+            console.error('Gagal mendownload:', err);
+            // Fallback
+            if (doc?.pdfUrl) window.open(doc.pdfUrl, '_blank');
         } finally {
-            setDownloading(false);
+            // Karena kita tidak tahu pasti kapan iframe selesai memicu download,
+            // kita beri visual feedback selama 2.5 detik
+            setTimeout(() => setDownloading(false), 2500);
         }
     };
 
@@ -199,10 +232,22 @@ const DetailKatalog = () => {
                             <button
                                 onClick={handleDownload}
                                 disabled={downloading}
-                                className="flex-1 bg-accent hover:brightness-110 text-white flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-lg shadow-lg shadow-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60"
+                                className={`flex-1 flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-lg shadow-lg transition-all ${downloading
+                                    ? 'bg-slate-400 text-white cursor-not-allowed opacity-80'
+                                    : 'bg-accent hover:brightness-110 text-white shadow-accent/20 hover:scale-[1.02] active:scale-[0.98]'
+                                    }`}
                             >
-                                <span className="material-symbols-outlined">{downloading ? 'hourglass_empty' : 'download'}</span>
-                                {downloading ? 'Memproses...' : 'Unduh Dokumen'}
+                                {downloading ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        Memproses...
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="material-symbols-outlined">download</span>
+                                        Unduh Dokumen
+                                    </>
+                                )}
                             </button>
                             <button
                                 onClick={handlePreview}

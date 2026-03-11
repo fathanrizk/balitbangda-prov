@@ -1,6 +1,6 @@
 import { db } from "../db/index.js";
 import { document, documentTag, documentAuthor, unitKerja } from "../db/schema.js";
-import { eq, ilike, sql, and, desc, asc } from "drizzle-orm";
+import { eq, ilike, sql, and, desc, asc, inArray } from "drizzle-orm";
 
 interface CreateDocumentInput {
     title: string;
@@ -41,15 +41,20 @@ export const documentService = {
         if (query.year) {
             conditions.push(eq(document.year, query.year));
         }
+        if (query.tag) {
+            const docIdsWithTagQuery = db
+                .select({ id: documentTag.documentId })
+                .from(documentTag)
+                .where(ilike(documentTag.name, query.tag));
+            conditions.push(inArray(document.id, docIdsWithTagQuery));
+        }
 
         const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
-        const orderBy = query.sort === "oldest" ? asc(document.createdAt) : desc(document.createdAt);
 
-        // If filtering by tag, we need a subquery
-        let tagFilter: string | undefined;
-        if (query.tag) {
-            tagFilter = query.tag;
-        }
+        // Utama: Urutkan berdasarkan Tahun terbit
+        const orderByYear = query.sort === "oldest" ? asc(document.year) : desc(document.year);
+        // Sekunder: Jika tahunnya sama, urutkan berdasarkan waktu upload
+        const orderByCreatedAt = query.sort === "oldest" ? asc(document.createdAt) : desc(document.createdAt);
 
         // Get documents
         let docsQuery = db
@@ -69,32 +74,20 @@ export const documentService = {
             .from(document)
             .leftJoin(unitKerja, eq(document.unitKerjaId, unitKerja.id))
             .where(whereClause)
-            .orderBy(orderBy)
+            .orderBy(orderByYear, orderByCreatedAt)
             .limit(limit)
             .offset(offset);
 
         const docs = await docsQuery;
 
-        // If tag filter, further filter
-        let filteredDocs = docs;
-        if (tagFilter) {
-            const docIdsWithTag = await db
-                .select({ documentId: documentTag.documentId })
-                .from(documentTag)
-                .where(ilike(documentTag.name, tagFilter));
-
-            const tagDocIds = new Set(docIdsWithTag.map((d) => d.documentId));
-            filteredDocs = docs.filter((d) => tagDocIds.has(d.id));
-        }
-
         // Get tags for each document
-        const docIds = filteredDocs.map((d) => d.id);
+        const docIds = docs.map((d) => d.id);
         const tags =
             docIds.length > 0
                 ? await db
                     .select()
                     .from(documentTag)
-                    .where(sql`${documentTag.documentId} IN ${docIds}`)
+                    .where(inArray(documentTag.documentId, docIds))
                 : [];
 
         // Get total count
@@ -106,7 +99,7 @@ export const documentService = {
         const total = Number(countResult[0].count);
 
         // Map tags to documents
-        const docsWithTags = filteredDocs.map((doc) => ({
+        const docsWithTags = docs.map((doc) => ({
             ...doc,
             tags: tags.filter((t) => t.documentId === doc.id).map((t) => t.name),
         }));

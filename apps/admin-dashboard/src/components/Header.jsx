@@ -1,9 +1,17 @@
 import React from 'react';
 
-const Header = ({ content, rightContent }) => {
+const Header = ({ content, rightContent, toggleSidebar, isSidebarOpen }) => {
     return (
-        <header className="h-16 border-b border-neutral-soft dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-10 flex items-center justify-between px-8">
-            <div className="flex items-center gap-2">
+        <header className="h-16 border-b border-neutral-soft dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-10 flex items-center justify-between px-8 transition-all duration-300">
+            <div className="flex items-center gap-4">
+                <button
+                    onClick={toggleSidebar}
+                    className="p-2 -ml-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg flex items-center justify-center transition-colors"
+                >
+                    <span className="material-symbols-outlined">
+                        {isSidebarOpen ? 'menu_open' : 'menu'}
+                    </span>
+                </button>
                 {content ? content : <span className="text-xl font-bold text-slate-800 dark:text-white">Dashboard Admin</span>}
             </div>
             {rightContent ? rightContent : (
